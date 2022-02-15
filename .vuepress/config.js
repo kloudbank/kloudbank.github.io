@@ -2,7 +2,7 @@ module.exports = {
   "title": "Kloudbank",
   "description": "Kloudbank demo.",
   "dest": "public",
-  "base": "",
+  "base": "/",
   "head": [
     [
       "link",
