@@ -11,18 +11,16 @@ sidebar: 'auto'
 author: 'jaemyeong.lee'
 ---
 
+# kubernates deploy 에 helm 과 kustomize 결합하기
+
 보통 kubernates 에 deploy 를 하기 위해서 yaml 파일을 사용하게 되는데요.
 argoCD 를 예를 들면 아래 제공되는 yaml 파일을 이용해서 배포할 수 있습니다.
 > [`argoCD manifests/install.yaml`](https://github.com/argoproj/argo-cd/blob/master/manifests/install.yaml)
-
 그런데 배포에 필요한 세부적인 설정이 필요한 경우 제공된 yaml 파일을 직접 수정해야 하기 때문에 매우 번거로운 방법입니다.
 그래서 보통 helm package 로 배포를 하게 되는데요.
-
 helm package 를 이용한 배포 방법은 values.yaml 을 통해서 상세설정을 할 수 있는 좋은 방법으로 많이 사용되고 있습니다.
-
 이 글은 helm package 와 kustomize 를 결합하는 배포 방법에 대해 소개해 드리려고 합니다.
 yaml 파일을 이용하는 방법과 helm 단독 배포 방식 그리고 kustomize 를 결합한 방법이 어떤 차이와 이점이 있는지 비교하면서 보시기 바랍니다.
-
 추가로 argoCD 가 helm, kustomize 를 처리하는 방식을 이해하는데도 도움이 됩니다.
 
 [이 글을 읽기전에 아래 내용을 숙지하세요.]
@@ -42,7 +40,6 @@ yaml 파일을 이용하는 방법과 helm 단독 배포 방식 그리고 kustom
 ## [Case 1] helm install 을 사용하여 배포하는 방법
 
 helm install 배포 방법은 가장 많이 사용하는 방식으로 대부분 익숙한 방법입니다.
-
 최종 모습과 비교하기 위한 것이니 참고로 보시기 바랍니다.
 
 - helm install 을 이용한 argocCD 배포
@@ -126,14 +123,10 @@ helm install 배포 방법은 가장 많이 사용하는 방식으로 대부분 
 ## [Case 2] helm template 을 사용하여 배포하는 방법
 
 이 방법은 helm package 를 yaml 형태로 만든 다음 kubectl apply -f 명령어를 사용하여 배포하는 방식입니다.
-
 이 방법을 사용하시는 분은 거의 없을거란 생각이 드는데요.
-
 이 방법의 이점은 helm 를 배포하기전에 yaml 파일을 미리 검토해 볼 수 있고
 kubectl diff 명령어로 배포된 형상과 미리 비교할 수도 있습니다.
-
 결과적으로 helm package 의 이점과 yaml 파일의 이점을 동시에 갖게 되는데요.
-
 참고로 argoCD 가 helm 을 처리할때 내부적으로 이 방식으로 처리하고 있습니다.
 
 - helm template 으로 yaml 파일을 생성하고 kubectl apply 로 배포합니다.
@@ -263,12 +256,9 @@ kubectl diff 명령어로 배포된 형상과 미리 비교할 수도 있습니�
 ## [Final Case] helm 과 kustomize 의 결합
 
 이제 최종적으로 소개드리려고 하는 helm 과 kustomize 의 결합 방법입니다.
-
 이 방법은 위 과정에서 진행해본 helm package, helm template 방식에 kustomize 의 이점을 더할 수 있는 방법입니다.
-
 kubernates 에서 설명하는 kustomize 의 사용법과 장점은 아래 사아트를 참고하시기 바랍니다.
 > <https://kubernetes.io/ko/docs/tasks/manage-kubernetes-objects/kustomization/>
-
 kustomize 의 공식 사이트에서 상세 스펙을 확인할 수 있습니다.
 > <https://kustomize.io/>
 
@@ -349,13 +339,9 @@ kustomize 의 공식 사이트에서 상세 스펙을 확인할 수 있습니다
   ```
 
 여기까지는 helm template 방식과 별 차이가 없어 보입니다.
-
 차이점은 helm repository 를 등록하지 않아도 사용할 수 있다는 것입니다.
-
 이게 이점이라고 할수는 없겠죠?
-
 이제 kustomize 의 장점을 활용해 볼 차례입니다.
-
 아래와 같은 케이스에서 사용할때 kustomize 는 그 진가를 발휘합니다.
 
 ### [Case 1] helm chart 에는 없는 resource 를 배포해줘야 할때

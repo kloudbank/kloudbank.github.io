@@ -12,15 +12,10 @@ author: 'jaemyeong.lee'
 # Low Code API 솔루션 소개
 
 최근 개발 트렌드를 보면 최소한의 소스코드 개발을 통해서 빠르게 서비스를 런칭하는데 관심이 높아지는거 같습니다.
-
 대부분의 개발 패턴을 보면 Database 에 데이터를 관리하는 목적의 어플리케이션을 많이 개발하게 되는데요.
-
 Database 를 모델링하고 DB Table 을 CRUD 하는 기능을 개발하게 됩니다.
-
 이런 개발은 보통 반복적이고 같은 코드로 개발이 되게 되는데요.
-
 이런 특징을 이용해서 Low Code API 솔루션이 개발된거 같습니다.
-
 PostgREST, Supabase, Hasura 의 3가지 솔루션에 대해 간략히 소개드리고자 합니다.
 
 위 솔루션은 공통적으로 아래와 같은 특징을 가지고 있습니다.
@@ -39,11 +34,11 @@ PostgREST, Supabase, Hasura 의 3가지 솔루션에 대해 간략히 소개드�
 - PostgREST 는 PostgreSQL 을 기반으로 REST API 를 심플하게 제공한다.
 - PostgreSQL 을 내장하고 있고 다른 Database 는 지원하지 않는다.
 
-### 아키텍처
+### PostgREST 아키텍처
 
 ![PostgREST Architecture](./images/postgrest_archi.png)
 
-### 특징
+### PostgREST 특징
 
 - PostgreSQL 기반 REST API
 - 권한관리는 postgresql 의 role 로 처리
@@ -58,13 +53,13 @@ PostgREST, Supabase, Hasura 의 3가지 솔루션에 대해 간략히 소개드�
 - json, csv 데이터 bulk insert 기능
 - binary data 지원
 
-### 단점
+### PostgREST 단점
 
 - PostgreSQL 만 지원
 - join 처리를 위해서는 Table 에 FOREIGN KEY constraints 가 있어야 함
 - url base 의 제약사항 때문에 query 문법이 직관적이지 않음
 
-### 주요기능
+### PostgREST 주요기능
 
 - REST API Query
   - Table Query, Field Selector
@@ -85,11 +80,11 @@ PostgREST, Supabase, Hasura 의 3가지 솔루션에 대해 간략히 소개드�
 - PostgreSQL 을 내장하고 있고 다른 Database 는 지원하지 않는다.
 - SaaS 형태로만 제공하고 있다.
 
-### 아키텍처
+### Supabase 아키텍처
 
 ![Supabase 아키텍처](./images/2021-12-17-16-05-01.png)
 
-### 특징
+### Supabase 특징
 
 - Database & Storage Management Platform
 - Project 단위로 관리됨
@@ -101,13 +96,13 @@ PostgREST, Supabase, Hasura 의 3가지 솔루션에 대해 간략히 소개드�
 - 기존 PostgreSQL Migration 지원
 - Oauth Authentication 지원
 
-### 단점
+### Supabase 단점
 
 - SaaS 만 지원
 - PostgreSQL 만 지원
 - REST API & SDK Learning Curve
 
-### 주요기능
+### Supabase 주요기능
 
 - UI 에서 제공되는 기능
   - Table Data 관리
@@ -128,11 +123,11 @@ PostgREST, Supabase, Hasura 의 3가지 솔루션에 대해 간략히 소개드�
 - 자체적으로 GraphQL Engine 이라고 예기한다.
 - 다른 제품들과 다르게 PostgreSQL 를 포함해서 MS-SQL 등 다른 Database 를 사용할 수 있다.
 
-### 아키텍처
+### Hasura 아키텍처
 
 ![Hasura 아키텍처](./images/2021-12-17-16-30-10.png)
 
-### 특징
+### Hasura 특징
 
 - GraphQL Engine
 - Docker Image 와 SaaS 를 같이 지원
@@ -145,12 +140,12 @@ PostgREST, Supabase, Hasura 의 3가지 솔루션에 대해 간략히 소개드�
 - Schedule Trigger 기능
 - REST API, CLI 제공
 
-### 단점
+### Hasura 단점
 
 - Database 관리 기능은 없음
 - SDK 는 없음
 
-### 주요기능
+### Hasura 주요기능
 
 - UI 기능
   - API 테스트
@@ -170,3 +165,5 @@ PostgREST, Supabase, Hasura 의 3가지 솔루션에 대해 간략히 소개드�
   ![Cloud Database](./images/2021-12-17-16-29-07.png)
 - SaaS 제공
   ![SaaS 제공](./images/2021-12-17-16-21-40.png)
+
+.끝.
