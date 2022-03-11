@@ -11,23 +11,27 @@ sidebar: 'auto'
 author: 'jaemyeong.lee'
 ---
 
-# kubernates deploy 에 helm 과 kustomize 결합하기
-보통 kubernates 에 deoloy 를 하기 위해서 yaml 파일을 사용하게 되는데요.<br>
-argoCD 를 예를 들면 아래 제공되는 yaml 파일을 이용해서 배포할 수 있습니다.<br>
-[`argoCD manifests/install.yaml`](https://github.com/argoproj/argo-cd/blob/master/manifests/install.yaml)<br>
-그런데 배포에 필요한 세부적인 설정이 필요한 경우 제공된 yaml 파일을 직접 수정해야 하기 때문에 매우 번거로운 방법입니다.<br>
-그래서 보통 helm package 로 배포를 하게 되는데요.<br>
-helm package 를 이용한 배포 방법은 values.yaml 을 통해서 상세설정을 할 수 있는 좋은 방법으로 많이 사용되고 있습니다.<p>
+보통 kubernates 에 deploy 를 하기 위해서 yaml 파일을 사용하게 되는데요.
+argoCD 를 예를 들면 아래 제공되는 yaml 파일을 이용해서 배포할 수 있습니다.
+> [`argoCD manifests/install.yaml`](https://github.com/argoproj/argo-cd/blob/master/manifests/install.yaml)
 
-이 글은 helm package 와 kustomize 를 결합하는 배포 방법에 대해 소개해 드리려고 합니다.<br>
-yaml 파일을 이용하는 방법과 helm 단독 배포 방식 그리고 kustomize 를 결합한 방법이 어떤 차이와 이점이 있는지 비교하면서 보시기 바랍니다.<br>
+그런데 배포에 필요한 세부적인 설정이 필요한 경우 제공된 yaml 파일을 직접 수정해야 하기 때문에 매우 번거로운 방법입니다.
+그래서 보통 helm package 로 배포를 하게 되는데요.
+
+helm package 를 이용한 배포 방법은 values.yaml 을 통해서 상세설정을 할 수 있는 좋은 방법으로 많이 사용되고 있습니다.
+
+이 글은 helm package 와 kustomize 를 결합하는 배포 방법에 대해 소개해 드리려고 합니다.
+yaml 파일을 이용하는 방법과 helm 단독 배포 방식 그리고 kustomize 를 결합한 방법이 어떤 차이와 이점이 있는지 비교하면서 보시기 바랍니다.
+
 추가로 argoCD 가 helm, kustomize 를 처리하는 방식을 이해하는데도 도움이 됩니다.
 
 [이 글을 읽기전에 아래 내용을 숙지하세요.]
+
 - 이 가이드는 argoCD 를 설치하는 가이드는 아닙니다.
 - helm 배포와 kustomzie 배포 방법을 비교하기 위해 argoCD 설치를 예시로 사용하였습니다.
 
 [실습을 위해서는 로컬 환경에 맞게 아래 프로그램 설치가 필요합니다.]
+
 - docker-desktop 설치
 - helm cli 3.0 이상 설치
 - kubectl cli 설치
@@ -36,10 +40,13 @@ yaml 파일을 이용하는 방법과 helm 단독 배포 방식 그리고 kustom
 자 그럼 실습을 시작해 볼까요?
 
 ## [Case 1] helm install 을 사용하여 배포하는 방법
-helm install 배포 방법은 가장 많이 사용하는 방식으로 대부분 익숙한 방법입니다.<br>
-최종 모습과 비교하기 위한 것이니 참고로 보시기 바랍니다.<br>
+
+helm install 배포 방법은 가장 많이 사용하는 방식으로 대부분 익숙한 방법입니다.
+
+최종 모습과 비교하기 위한 것이니 참고로 보시기 바랍니다.
 
 - helm install 을 이용한 argocCD 배포
+
   ``` bash
   ## helm repoistory 를 등록합니다.
   $ helm repo add argo https://argoproj.github.io/argo-helm
@@ -72,7 +79,9 @@ helm install 배포 방법은 가장 많이 사용하는 방식으로 대부분 
   NAME            NAMESPACE       REVISION        UPDATED                                 STATUS          CHART           APP VERSION
   my-argocd       my-argocd       1               2022-03-07 14:14:30.62671 +0900 KST     deployed        argo-cd-3.35.2  v2.2.5
   ```
+
 - replicas 를 변경하기 위해 아래 내용으로 my-values.yaml 파일을 생성합니다.
+
   ``` yaml
   # my-values.yaml
   controller:
@@ -80,7 +89,9 @@ helm install 배포 방법은 가장 많이 사용하는 방식으로 대부분 
   server:
     replicas: 2
   ```
+
 - my-values.yaml 로 helm 을 배포합니다.
+
   ``` bash
   ## helm upgrade 를 사용합니다.
   ## my-values.yml 파일이 있는 폴더에서 실행합니다. 
@@ -103,7 +114,9 @@ helm install 배포 방법은 가장 많이 사용하는 방식으로 대부분 
   my-argocd-server-674ffff767-c8b2r                   0/1     ContainerCreating   0          2s
   my-argocd-server-674ffff767-dt6r4                   1/1     Running             0          12m
   ```
+
 - helm uninstall 명령어로 배포된 helm 과 리소스를 같이 삭제할 수 있습니다.
+
   ``` bash
   ## helm uninstall
   $ helm uninstall my-argocd
@@ -111,14 +124,20 @@ helm install 배포 방법은 가장 많이 사용하는 방식으로 대부분 
   ```
 
 ## [Case 2] helm template 을 사용하여 배포하는 방법
-이 방법은 helm package 를 yaml 형태로 만든 다음 kubectl apply -f 명령어를 사용하여 배포하는 방식입니다.<br>
-이 방법을 사용하시는 분은 거의 없을거란 생각이 드는데요.<br>
-이 방법의 이점은 helm 를 배포하기전에 yaml 파일을 미리 검토해 볼 수 있고<br>
-kubectl diff 명령어로 배포된 형상과 미리 비교할 수도 있습니다.<br>
-결과적으로 helm package 의 이점과 yaml 파일의 이점을 동시에 갖게 되는데요.<br>
-참고로 argoCD 가 helm 을 처리할때 내부적으로 이 방식으로 처리하고 있습니다.<br>
+
+이 방법은 helm package 를 yaml 형태로 만든 다음 kubectl apply -f 명령어를 사용하여 배포하는 방식입니다.
+
+이 방법을 사용하시는 분은 거의 없을거란 생각이 드는데요.
+
+이 방법의 이점은 helm 를 배포하기전에 yaml 파일을 미리 검토해 볼 수 있고
+kubectl diff 명령어로 배포된 형상과 미리 비교할 수도 있습니다.
+
+결과적으로 helm package 의 이점과 yaml 파일의 이점을 동시에 갖게 되는데요.
+
+참고로 argoCD 가 helm 을 처리할때 내부적으로 이 방식으로 처리하고 있습니다.
 
 - helm template 으로 yaml 파일을 생성하고 kubectl apply 로 배포합니다.
+
   ``` bash
   ## helm template 으로 temp.yaml 파일을 생성합니다.
   $ helm template my-argocd argo/argo-cd > temp.yaml
@@ -146,7 +165,9 @@ kubectl diff 명령어로 배포된 형상과 미리 비교할 수도 있습니�
   my-argocd-repo-server-66c569469c-b4q7x              1/1     Running   0          39s
   my-argocd-server-674ffff767-5gzch                   1/1     Running   0          38s
   ```
+
 - replicas 를 변경하기 위해 아래 내용으로 my-values.yaml 파일을 생성합니다.
+
   ``` yaml
   # my-values.yaml
   controller:
@@ -154,7 +175,9 @@ kubectl diff 명령어로 배포된 형상과 미리 비교할 수도 있습니�
   server:
     replicas: 2
   ```
+
 - my-values.yaml 을 적용하여 배포합니다.
+
   ``` bash
   ## my-values.yaml 로 temp.yaml 파일을 생성합니다.
   $ helm template my-argocd argo/argo-cd -f my-values.yaml > temp.yaml
@@ -219,7 +242,9 @@ kubectl diff 명령어로 배포된 형상과 미리 비교할 수도 있습니�
   my-argocd-server-674ffff767-c8b2r                   0/1     ContainerCreating   0          2s
   my-argocd-server-674ffff767-dt6r4                   1/1     Running             0          12m
   ```
+
 - kubectl delete -f 명령어로 배포된 리소스를 삭제할 수 있습니다.
+
   ``` bash
   ## kubectl delete 사용
   ## 이전에 배포했던 temp.yaml 파일을 사용해야 합니다.
@@ -235,16 +260,21 @@ kubectl diff 명령어로 배포된 형상과 미리 비교할 수도 있습니�
   ## 가능한 이전에 배포했던 temp.yaml 파일을 사용해서 삭제하도록 합니다.
   ```
 
-## [Final Case] helm 과 kustomize 의 결합 
-이제 최종적으로 소개드리려고 하는 helm 과 kustomize 의 결합 방법입니다.<br>
-이 방법은 위 과정에서 진행해본 helm package, helm template 방식에 kustomize 의 이점을 더할 수 있는 방법입니다.<br>
-kubernates 에서 설명하는 kustomize 의 사용법과 장점은 아래 가이드를 참고하시기 바랍니다.<br>
-https://kubernetes.io/ko/docs/tasks/manage-kubernetes-objects/kustomization/<br>
-kustomize 의 공식 사이트에서 상세 스펙을 확인할 수 있습니다.<br>
-https://kustomize.io/<br>
+## [Final Case] helm 과 kustomize 의 결합
+
+이제 최종적으로 소개드리려고 하는 helm 과 kustomize 의 결합 방법입니다.
+
+이 방법은 위 과정에서 진행해본 helm package, helm template 방식에 kustomize 의 이점을 더할 수 있는 방법입니다.
+
+kubernates 에서 설명하는 kustomize 의 사용법과 장점은 아래 사아트를 참고하시기 바랍니다.
+> <https://kubernetes.io/ko/docs/tasks/manage-kubernetes-objects/kustomization/>
+
+kustomize 의 공식 사이트에서 상세 스펙을 확인할 수 있습니다.
+> <https://kustomize.io/>
 
 - kustomize helm plug-in 을 사용하여 helm package 를 사용할 수 있습니다.
-  ``` bash
+
+  ``` yaml
   ## kustomization.yaml 파일을 생성하고 아래 내용을 작성합니다.
   helmCharts:
     - name: argo-cd
@@ -254,7 +284,9 @@ https://kustomize.io/<br>
       namespace: my-argocd
       valuesFile: my-values.yaml 
       includeCRDs: true # CustomResourceDefinition 이 있을 경우 true
+  ```
 
+  ``` bash
   ## kustomize build 명령어로 배포용 yaml 파일을 생성합니다.
   $ kustomize build . --enable-helm > temp.yaml
   created temp.yaml
@@ -288,7 +320,9 @@ https://kustomize.io/<br>
   error: json: unknown field "includeCRDs"
   # kubectl apply -k 로는 배포가 되지 않습니다.
   # 이유는 kustomize build 에서 --enable-helm 옵션이 필요하기 때문입니다.
+  ```
 
+  ``` yaml
   ## 실제로 argoCD 를 사용해서 배포할 경우 위와 같은 오류가 발생합니다.
   # argoCD 에서 kustomize 명령어에 옵션을 추가하도록 설정이 필요합니다.
   # argocd values.yaml 에 아래 설정을 추가합니다.
@@ -298,6 +332,7 @@ https://kustomize.io/<br>
   ```
 
 - kubectl delete -f 명령어로 배포된 리소스를 삭제할 수 있습니다.
+
   ``` bash
   ## kubectl delete 사용
   ## 이전에 배포했던 temp.yaml 파일을 사용해야 합니다.
@@ -313,13 +348,18 @@ https://kustomize.io/<br>
   ## 가능한 이전에 배포했던 temp.yaml 파일을 사용해서 삭제하도록 합니다.
   ```
 
-여기까지는 helm template 방식과 별 차이가 없어 보입니다.<br>
-차이점은 helm repository 를 등록하지 않아도 사용할 수 있다는 것입니다. <br>
-이게 이점이라고 할수는 없겠죠? <br>
-이제 kustomize 의 장점을 활용해 볼 차례입니다.<br>
-아래와 같은 케이스에서 사용할때 kustomize 는 그 진가를 발휘합니다.<br>
+여기까지는 helm template 방식과 별 차이가 없어 보입니다.
 
-- helm chart 에는 없는 resource 를 배포해줘야 할때
+차이점은 helm repository 를 등록하지 않아도 사용할 수 있다는 것입니다.
+
+이게 이점이라고 할수는 없겠죠?
+
+이제 kustomize 의 장점을 활용해 볼 차례입니다.
+
+아래와 같은 케이스에서 사용할때 kustomize 는 그 진가를 발휘합니다.
+
+### [Case 1] helm chart 에는 없는 resource 를 배포해줘야 할때
+
   ``` yaml
   ## 아래와 같은 secret 을 추가로 배포하기 위해 my-secret.yaml 파일을 생성한다.
   # my-secret.yaml
@@ -380,7 +420,8 @@ https://kustomize.io/<br>
   ...중략...
   ```
 
-- 여러개의 helm chart 를 하나로 묶어서 관리하고 싶을때
+### [Case 2] 여러개의 helm chart 를 하나로 묶어서 관리하고 싶을때
+
   ``` yaml
   ## 2개의 helm chart 를 배포하는 kustomization.yaml 을 각각 생성합니다.
   ## 아래와 같은 폴더 구조를 생성합니다.
@@ -395,13 +436,13 @@ https://kustomize.io/<br>
 
   ## ./argocd/kustomization.yaml
   helmCharts:
-  - name: argo-cd
-    repo: https://argoproj.github.io/argo-helm
-    version: 3.26.5
-    releaseName: my-argocd
-    namespace: my-argocd
-    valuesFile: my-values.yaml
-    includeCRDs: true
+    - name: argo-cd
+      repo: https://argoproj.github.io/argo-helm
+      version: 3.26.5
+      releaseName: my-argocd
+      namespace: my-argocd
+      valuesFile: my-values.yaml
+      includeCRDs: true
 
   ## ./argocd/my-values.yaml
   controller:
@@ -411,21 +452,21 @@ https://kustomize.io/<br>
 
   ## ./argocd-redis/kustomization.yaml
   helmCharts:
-  - name: redis
-    repo: https://charts.bitnami.com/bitnami
-    version: 16.4.0
-    releaseName: my-argocd-redis
-    namespace: my-argocd
-    valuesFile: my-values.yaml
-    includeCRDs: false
+    - name: redis
+      repo: https://charts.bitnami.com/bitnami
+      version: 16.4.0
+      releaseName: my-argocd-redis
+      namespace: my-argocd
+      valuesFile: my-values.yaml
+      includeCRDs: false
 
   ## ./argocd-redis/my-values.yaml
   architecture: standalone
 
   ## ./kustomization.yaml
   bases:
-  - argocd
-  - argocd-redis
+    - argocd
+    - argocd-redis
   ```
   
   ``` bash
@@ -464,6 +505,7 @@ https://kustomize.io/<br>
   ```
 
 ## argoCD 와 연관성
+
 위에서 실습한 명령어들은 실제로 argoCD 의 내부 동작에서 사용되는 명령어와 일치합니다.
 
 - helm template : helm chart type argoCD application 에서 refresh 를 할 때
