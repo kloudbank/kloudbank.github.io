@@ -169,7 +169,7 @@ module.exports = {
         {
           title: "Introduction",
           collapsable: false,
-          children: ["", "gitopsintro"],
+          children: ["", "gitopsintro", "helm_kustomize"],
           sidebarDepth: 2,
         },
         {

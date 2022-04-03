@@ -1,5 +1,5 @@
 ---
-title: kubernates deploy 에 helm 과 kustomize 결합하기
+title: Helm + Kustomize
 date: 2022-03-07
 tags:
 - kubernates
@@ -10,6 +10,8 @@ categories:
 sidebar: 'auto'
 author: 'jaemyeong.lee'
 ---
+
+kustomize 를 활용한 helm 배포 방식 및 활용 가능성 검토.
 
 # kubernates deploy 에 helm 과 kustomize 결합하기
 
