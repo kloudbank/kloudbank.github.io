@@ -33,7 +33,7 @@ module.exports = {
         "icon": "reco-message",
         "items": [
           {
-            "text": "GitOps & Task Runner",
+            "text": "GitOps-Task Runner",
             "link": "/docs/001_hcpsrecq/"
           },
           {
