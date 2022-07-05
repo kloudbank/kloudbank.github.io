@@ -33,8 +33,12 @@ module.exports = {
         "icon": "reco-message",
         "items": [
           {
-            "text": "HCP SRE CQ",
+            "text": "GitOps & Task Runner",
             "link": "/docs/001_hcpsrecq/"
+          },
+          {
+            "text": "BP Collab.",
+            "link": "/docs/002_bpcollab/"
           }
         ]
       },
@@ -217,6 +221,13 @@ module.exports = {
           collapsable: false,
           children: ["basics", "resources"],
           sidebarDepth: 2,
+        },
+      ],
+      "/docs/002_bpcollab/": [
+        {
+          title: "Introduction",
+          collapsable: false,
+          children: [""],
         },
       ],
     },
