@@ -5,13 +5,17 @@
   "scripts": {
     "debug": "node --nolazy --inspect-brk=9229 ./node_modules/.bin/vuepress dev . --host \"localhost\" --port 6400",
     "dev": "vuepress dev . --open --host \"localhost\" --port 6400",
-    "build": "vuepress build -d .vuepress/dist"
+    "build": "vuepress build -d .vuepress/dist",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d .vuepress/dist"
   },
   "devDependencies": {
-    "vuepress": "1.8.2",
-    "vuepress-theme-reco": "1.6.10",
     "@dovyp/vuepress-plugin-clipboard-copy": "^1.0.0-alpha.7",
-    "markdown-it-plantuml": "^1.4.1"
+    "gh-pages": "^4.0.0",
+    "markdown-it-plantuml": "^1.4.1",
+    "vuepress": "1.8.2",
+    "vuepress-theme-reco": "1.6.10"
   },
-  "description": "vuepress-reco test"
+  "description": "vuepress-reco test",
+  "homepage": "https://kloudbank.github.io"
 }

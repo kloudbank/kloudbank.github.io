@@ -36,10 +36,10 @@ module.exports = {
             "text": "GitOps-Task Runner",
             "link": "/docs/001_hcpsrecq/"
           },
-          // {
-          //   "text": "BP Collab.",
-          //   "link": "/docs/002_bpcollab/"
-          // }
+          {
+            "text": "BP Collab.",
+            "link": "/docs/002_bpcollab/"
+          }
         ]
       },
       {
@@ -60,7 +60,6 @@ module.exports = {
       }
     ],
     "sidebar": {
-      // Blogs
       "/blogs/001_guide/": [
         {
           title: "Guide",
@@ -223,13 +222,13 @@ module.exports = {
           sidebarDepth: 2,
         },
       ],
-      // "/docs/002_bpcollab/": [
-      //   {
-      //     title: "Introduction",
-      //     collapsable: false,
-      //     children: [""],
-      //   },
-      // ],
+      "/docs/002_bpcollab/": [
+        {
+          title: "Introduction",
+          collapsable: false,
+          children: [""],
+        },
+      ],
     },
     "type": "blog",
     "blogConfig": {
