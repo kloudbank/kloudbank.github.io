@@ -2,6 +2,7 @@
   "name": "kloudbank.github.io",
   "version": "1.0.0",
   "author": "noisonnoiton",
+  "homepage": "https://kloudbank.github.io",
   "scripts": {
     "debug": "node --nolazy --inspect-brk=9229 ./node_modules/.bin/vuepress dev . --host \"localhost\" --port 6400",
     "dev": "vuepress dev . --open --host \"localhost\" --port 6400",
@@ -16,6 +17,5 @@
     "vuepress": "1.8.2",
     "vuepress-theme-reco": "1.6.10"
   },
-  "description": "vuepress-reco test",
-  "homepage": "https://kloudbank.github.io"
+  "description": "vuepress-reco test"
 }
