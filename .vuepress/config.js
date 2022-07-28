@@ -231,7 +231,7 @@ module.exports = {
         {
           title: "Backend",
           collapsable: false,
-          children: ["befwk"],
+          children: ["befwk", "beorm", "beodm", "beredis", "bewebpush"],
           sidebarDepth: 2,
         },
       ],

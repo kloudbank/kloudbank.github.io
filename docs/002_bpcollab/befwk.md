@@ -16,6 +16,14 @@ Node.js v16.15.x 이상의 stable version 기준, Backend Framework 검토.
   - Nest 공식 개발 문서: <https://docs.nestjs.com/>
   - Nest CRUD Generator 설명: <https://docs.nestjs.com/recipes/crud-generator>
 
+### Repository
+
+- Nest 초기 검토 내역: <https://github.com/hcp-bpcp/hcp-bpcp-backend-nestjs>
+- Nest 기반 기능 검증: <https://github.com/hcp-bpcp/hcp-bpcp-backend-nestjs>
+  - ORM: TypeORM, Prisma
+  - ODM: Mongoose
+  - Redis 기반 Cache, Queue 활용
+
 ### CLI 활용
 
 Nest CLI 활용은 최초에 framework setup 시 유리한 점이 많으며, 이미 제공된 framework 내에서 API 추가할 경우에는 _<u>굳이 사용하지 않아도 관계 없음.</u>_
@@ -147,6 +155,11 @@ Nest 는 `@nestjs/config` package 를 제공하여, configuration 관리를 fram
 Nest 에서는 `@nestjs/common` 에 내장된 기본 logger module 을 통해서, logging 에 대한 편의성을 제공하고 있음.  
 Framework 관점에서는, 추가적으로 Access Logging 을 위한 공통 middleware 를 개발하여 적용하였음.
 
+::: tip
+  Nest Logging 관련 문서
+  <https://docs.nestjs.com/techniques/logger>
+:::
+
 - 공통 module import 내역
   - LoggerModule, WinstonMiddleware import (`app.module.ts`)
   ```typescript
@@ -178,11 +191,6 @@ Framework 관점에서는, 추가적으로 Access Logging 을 위한 공통 midd
     this.logger.debug('Debugging');
   ...
   ```
-
-::: tip
-  Nest Logging 관련 문서
-  <https://docs.nestjs.com/techniques/logger>
-:::
 
 ### Swagger 설정
 
@@ -275,3 +283,40 @@ Node.js 기반 Backend 개발 시 API 문서 관리를 위한 swagger 설정의 
   ```
   - Swagger 화면 조회 예시
   ![](./images/2022-07-28-15-12-16.png)
+
+
+## Express
+
+pure Javascript 기반 Node.js Express backend framework 검토.  
+Nest 활용으로 최종 결정하였으나, 간단한 Test 용 API sample 개발 내역임.
+
+### Repository
+
+- Express 기반 기능 검증: <https://github.com/hcp-bpcp/hcp-bpcp-backend-express>
+  - ORM: sequelize
+  - Entity 자동 생성 및 CRUD 기능 개발
+  - Raw SQL 활용 검토
+
+### Example
+
+- routes / controllers / models 기준의 layered arch. 적용
+- Directory 구조 아래 참고
+```
+app
+├── app.js
+├── config
+│   └── db.config.js
+├── controllers
+│   └── user.controller.js
+├── models
+│   ├── index.js
+│   └── user.model.js
+├── routes
+│   ├── index.js
+│   └── user.routes.js
+├── server.js
+└── utils
+    ├── swagger
+    │   └── User.yaml
+    └── swagger.js
+```
