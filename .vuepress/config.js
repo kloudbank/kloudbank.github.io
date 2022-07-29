@@ -37,7 +37,7 @@ module.exports = {
             "link": "/docs/001_hcpsrecq/"
           },
           {
-            "text": "BP Collab.",
+            "text": "Collab. Portal",
             "link": "/docs/002_bpcollab/"
           }
         ]

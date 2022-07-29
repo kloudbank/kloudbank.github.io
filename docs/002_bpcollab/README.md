@@ -1,12 +1,12 @@
 ---
 title: Overview
-date: 2022-07-27
+date: 2022-07-05
 sidebar: 'auto'
 author: 'noisonnoiton'
 ---
 
-## BP Collaboration Portal
-- BP 협업 Portal 의 Backend / Frontend tech. set 검증 및 활용 방안
+## Collaboration Portal
+- 협업 Portal 의 Backend / Frontend tech. set 검증 및 활용 방안
 - 외부 Portal MVP 기능 설계 및 개발
 - Github Organization: <https://github.com/hcp-bpcp>
 
