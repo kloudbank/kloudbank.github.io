@@ -104,7 +104,7 @@ _<u>Nest 제공 module 인 `@nestjs/typeorm` 을 활용하지 않는 방향으�
 RDB 는 **PostgreSQL** 활용.
 
 ::: tip
-  Nest RDB Recipe
+  Nest TypeORM Recipe
   <https://docs.nestjs.com/recipes/sql-typeorm>
 :::
 
