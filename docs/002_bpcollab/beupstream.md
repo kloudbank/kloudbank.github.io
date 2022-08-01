@@ -135,13 +135,13 @@ Todo 목록 | GET | `/todos` |
 Todo 조회 | GET | `/todos/{todoid}` | 
 Todo 수정 | PUT | `/todos/{todoid}` | 
 Todo 삭제 | DELETE | `/todos/{todoid}` | 
-Todo 완료 | PUT | `/todos/{todoid}/complete` | Todo status 완료 처리 및 Interface 연계 용도
+Todo 완료 | POST | `/todos/{todoid}/complete` | Todo status 완료 처리 및 Interface 연계 용도
 
 ### Interface API
 
 Name | URI | Method | Remark
 ----- | ----- | ----- | -----
-Interface Upstream | POST | `/interface/upstream` | Transform data type and Interface (Document to RDB)
+Interface Upstream | POST | `/interface/{todoid}/upstream` | Transform data type and Interface (Document to RDB)
 
 ## Data Model Design
 

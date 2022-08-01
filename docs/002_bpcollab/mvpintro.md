@@ -9,8 +9,11 @@ Collab. Portal MVP (Mean Viable Product) Introduction.
 
 ## Backend
 
-- Forward Trade
-  - History Based
-  - Queue Based
+1. Upstream process
+- History Based
+- Queue Based
+
+2. Downstream process
+...
 
 ## Frontend
