@@ -234,6 +234,12 @@ module.exports = {
           children: ["befwk", "beorm", "beodm", "beredis", "bewebpush"],
           sidebarDepth: 2,
         },
+        {
+          title: "MVP",
+          collapsable: false,
+          children: ["mvpintro", "beupstream"],
+          sidebarDepth: 2,
+        },
       ],
     },
     "type": "blog",
