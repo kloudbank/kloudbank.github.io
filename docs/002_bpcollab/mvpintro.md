@@ -5,7 +5,7 @@ sidebar: 'auto'
 author: 'noisonnoiton'
 ---
 
-Collab. Portal MVP (Mean Viable Product) Introduction.
+Collab. Portal MVP (Minimum Viable Product) Introduction.
 
 ## Backend
 

@@ -126,7 +126,7 @@ MVP 기능 구현 시 필요한, API 개발 대상 list-up.
 
 ### Todo API
 
-MongoDB 에 적재되는 document data **Todo** 의 CRUD 관련 API List.
+MongoDB 에 적재되는 document data **Todo** 의 CRUD 관련 API list.
 
 Name | URI | Method | Remark
 ----- | ----- | ----- | -----
@@ -135,13 +135,24 @@ Todo 목록 | GET | `/todos` |
 Todo 조회 | GET | `/todos/{todoid}` | 
 Todo 수정 | PUT | `/todos/{todoid}` | 
 Todo 삭제 | DELETE | `/todos/{todoid}` | 
-Todo 완료 | POST | `/todos/{todoid}/complete` | Todo status 완료 처리 및 Interface 연계 용도
+Todo 완료 | POST | `/todos/{todoid}/complete` | Todo status 완료 처리 및 interface 연계 용도
+Todo 완료 queueing | POST | `/todos/{todoid}/complete-queue` | Todo status 완료 처리 queueing producer
 
 ### Interface API
 
+MongoDB 적재 data interface 를 위한 API List
+
 Name | URI | Method | Remark
 ----- | ----- | ----- | -----
-Interface Upstream | POST | `/interface/{todoid}/upstream` | Transform data type and Interface (Document to RDB)
+Interface Upstream | POST | `/interface/{todoid}/upstream` | Transform data type and interface (Document to RDB)
+
+### Interface Consumer
+
+Queue subscribe 및 data interface 를 수행하는 consumer
+
+Name | Processor (Queue) | Process (Key) | Remark
+----- | ----- | ----- | -----
+Upstream Consumer | `todo-completed` | `upstream` | Subscribe queue and transform data type and interface (Document to RDB)
 
 ## Data Model Design
 
@@ -152,7 +163,7 @@ Data Model Sample 설계 내역.
 MongoDB 적재용 document data sample schema.
 
 ::: tip
-  - MongoDB 내부적으로 Document 고유의 ObjectId type 의 **_id** 를 생성
+  - MongoDB 내부적으로 document 고유의 ObjectId type 의 **_id** 를 생성
   - Mongoose timestamp 설정으로 **createdAt, updatedAt** 자동 생성
 :::
   
@@ -244,5 +255,172 @@ if_todos   | value     | string   | True     | False
 
 ## Development
 
+Backend Service 개발 내역 정리.
+
+### Repository 구성 및 Summary
+
+- MVP Service (hcp-bpcp-backend-mvp)
+  - Github Repository: <https://github.com/hcp-bpcp/hcp-bpcp-backend-mvp>
+  - 주요 기능:
+    - MongoDB Collection CRUD API 제공
+    - Todo data 완료 처리
+    - MVP Interace API 연계
+    - MVP Interface queueing process 연계
+
+- MVP Interface Service (hcp-bpcp-backend-mvp-interface)
+  - Github Repository: <https://github.com/hcp-bpcp/hcp-bpcp-backend-mvp-interface>
+  - 주요 기능:
+    - Document data type trasformation
+    - RDB table data 생성 및 수정
+    - Data interface API endpoint 제공
+    - MVP Interface queueing 시, subscribe and interface process 수행
+
+- Auth Service (hcp-bpcp-backend-auth)
+  - Github Repository: <https://github.com/hcp-bpcp/hcp-bpcp-backend-mvp-interface>
+  - 주요 기능:
+    - Ingress 기반 auth-url 의 인증 API endpoint 제공
+    - Redis cache 기반 token data 관리 기능
+    - JWT Token 인증 process 수행
+
+### Admin URL
+
+- API Docs.
+  - MVP Service: <https://hcp-bpcp-backend-mvp.bpcp.kubepia.net/api-docs/>
+  - MVP Interface Service: <https://hcp-bpcp-backend-mvp-interface.bpcp.kubepia.net/api-docs/>
+  - Auth Service: <https://hcp-bpcp-backend-auth.bpcp.kubepia.net/api-docs/>
+
+- Monitoring
+  - Bull Dashboard: <https://hcp-bpcp-backend-mvp.bpcp.kubepia.net/admin/queues/>
+
 ## Deployment View
+
+Cluster deployment view.
+
+### API Sync Model
+
+- MVP service 접근 시, ingress auth-url 기반 인증
+- MVP <-> MVP Interface 등 backend service 간 API 연계는 k8s service name 기반으로 요청
+
+@startuml
+scale max 1200 width
+scale max 600 height
+' skinparam nodesep 10
+' skinparam ranksep 10
+
+' Kubernetes
+!define KubernetesPuml https://raw.githubusercontent.com/dcasati/kubernetes-PlantUML/master/dist
+
+!includeurl KubernetesPuml/kubernetes_Common.puml
+!includeurl KubernetesPuml/kubernetes_Context.puml
+!includeurl KubernetesPuml/kubernetes_Simplified.puml
+
+!includeurl KubernetesPuml/OSS/KubernetesSvc.puml
+!includeurl KubernetesPuml/OSS/KubernetesPod.puml
+!includeurl KubernetesPuml/OSS/KubernetesIng.puml
+
+' Kubernetes Components
+
+Cluster_Boundary(cluster, "Channel") {
+  circle "Frontend App." as feapp
+
+  Namespace_Boundary(beappns, "Backend App.") {
+    KubernetesIng(ingauth, "auth-ingress", "")
+    KubernetesIng(ingmvp, "mvp-ingress", "")
+    KubernetesSvc(svcauth, "auth-service", "")
+    KubernetesSvc(svcmvp, "mvp-service", "")
+    KubernetesSvc(svcmvpif, "mvpif-service", "")
+    KubernetesPod(podauth, "auth-pod", "")
+    KubernetesPod(podmvp, "mvp-pod", "")
+    KubernetesPod(podmvpif, "mvpif-pod", "")
+  }
+  Namespace_Boundary(mongons, "MongoDB") {
+    database "Document" as mongodb
+  }
+  Namespace_Boundary(postgrens, "PostgreSQL") {
+    database "RDB Tables" as rdbtabs
+  }
+
+  Rel_R(ingauth, svcauth, " ")
+  Rel(ingmvp, ingauth, "Auth check")
+  Rel(ingauth, ingmvp, " ")
+  Rel_R(ingmvp, svcmvp, " ")
+  Rel_R(svcauth, podauth, " ")
+  Rel_R(svcmvp, podmvp, " ")
+  Rel(podmvp, svcmvpif, " ")
+  Rel_R(svcmvpif, podmvpif, " ")
+
+  podmvp -r-> mongodb
+  podmvpif .r.> mongodb
+  podmvpif -d-> rdbtabs
+
+  feapp -r-> ingmvp
+}
+
+@enduml
+
+### Queueing Model
+
+- MVP service 접근 시, ingress auth-url 기반 인증
+- <u>MVP Backend Service 간 API 호출 없음</u>
+
+
+@startuml
+scale max 1200 width
+scale max 600 height
+' skinparam nodesep 10
+' skinparam ranksep 10
+
+' Kubernetes
+!define KubernetesPuml https://raw.githubusercontent.com/dcasati/kubernetes-PlantUML/master/dist
+
+!includeurl KubernetesPuml/kubernetes_Common.puml
+!includeurl KubernetesPuml/kubernetes_Context.puml
+!includeurl KubernetesPuml/kubernetes_Simplified.puml
+
+!includeurl KubernetesPuml/OSS/KubernetesSvc.puml
+!includeurl KubernetesPuml/OSS/KubernetesPod.puml
+!includeurl KubernetesPuml/OSS/KubernetesIng.puml
+
+' Kubernetes Components
+
+Cluster_Boundary(cluster, "Channel") {
+  circle "Frontend App." as feapp
+
+  Namespace_Boundary(beappns, "Backend App.") {
+    KubernetesPod(podmvpif, "mvpif-pod", "")
+    KubernetesIng(ingauth, "auth-ingress", "")
+    KubernetesIng(ingmvp, "mvp-ingress", "")
+    KubernetesSvc(svcauth, "auth-service", "")
+    KubernetesSvc(svcmvp, "mvp-service", "")
+    KubernetesPod(podauth, "auth-pod", "")
+    KubernetesPod(podmvp, "mvp-pod", "")
+  }
+  Namespace_Boundary(mongons, "MongoDB") {
+    database "Document" as mongodb
+  }
+  Namespace_Boundary(redisns, "Redis") {
+    queue "Queue" as redisqueue
+  }
+  Namespace_Boundary(postgrens, "PostgreSQL") {
+    database "RDB Tables" as rdbtabs
+  }
+
+  Rel_D(ingauth, svcauth, " ")
+  Rel(ingmvp, ingauth, "Auth check")
+  Rel(ingauth, ingmvp, " ")
+  Rel_D(ingmvp, svcmvp, " ")
+  Rel_R(svcauth, podauth, " ")
+  Rel_R(svcmvp, podmvp, " ")
+
+  podmvp -r-> redisqueue
+  podmvp -r-> mongodb
+
+  podmvpif .d.* redisqueue
+  podmvpif .d.> mongodb
+  podmvpif -d-> rdbtabs
+
+  feapp -r-> ingmvp
+}
+
+@enduml
 
