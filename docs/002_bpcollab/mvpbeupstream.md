@@ -1,6 +1,6 @@
 ---
 title: Upstream Process (Backend)
-date: 2022-08-01
+date: 2022-08-02
 sidebar: 'auto'
 author: 'noisonnoiton'
 ---
@@ -22,7 +22,7 @@ endlegend
 "Internal User" as intuser
 node "Channel" as channel {
   rectangle "External Portal" as extportal #aqua
-  [Create Doc] as credoc #aqua
+  [Create/Update Doc] as credoc #aqua
   [Interface Doc.] as ifdoc #aqua
   database "Document DB" as docdb #aqua
 }
@@ -299,7 +299,7 @@ Cluster deployment view.
 ### API Sync Model
 
 - MVP service 접근 시, ingress auth-url 기반 인증
-- MVP <-> MVP Interface 등 backend service 간 API 연계는 k8s service name 기반으로 요청
+- MVP <-> MVP Interface 등 backend service 간 API 연계는 k8s service name 기반으로 요청 **<u>(인증 없음)</u>**
 
 @startuml
 scale max 1200 width

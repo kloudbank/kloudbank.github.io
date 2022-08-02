@@ -1,6 +1,6 @@
 ---
 title: Redis 활용
-date: 2022-07-29
+date: 2022-07-30
 sidebar: 'auto'
 author: 'noisonnoiton'
 ---

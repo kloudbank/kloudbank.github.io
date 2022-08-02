@@ -237,7 +237,7 @@ module.exports = {
         {
           title: "MVP",
           collapsable: false,
-          children: ["mvpintro", "beupstream"],
+          children: ["mvpintro", "mvpbeupstream"],
           sidebarDepth: 2,
         },
       ],
