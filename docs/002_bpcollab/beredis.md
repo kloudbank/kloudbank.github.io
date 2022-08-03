@@ -345,6 +345,18 @@ export class TodosConsumer {
   }
 ```
 
+- Test result
+  - Producer 생성 log 및 consumer failed / completed event 에 대한 log 생성 내역
+```sh
+### produce and job completed
+[Winston] Info	2022-08-03T01:28:51+00:00 "POST /api/v1/todos/temporary" 201 Created - {"service":"api"} +19s
+[Winston] Info	2022-08-03T01:28:51+00:00 {"todo":{"todoid":61,"content":{"test":"냐아옹"},"completed":false}} - {} +15ms
+[Winston] Info	2022-08-03T01:28:51+00:00 (Queue) on Completed: job 87 -> result: undefined - {} +0ms
+### produce and job failed
+[Winston] Info	2022-08-03T01:31:30+00:00 "POST /api/v1/todos/temporary" 201 Created - {"service":"api"} +3m
+[Winston] Error	2022-08-03T01:31:30+00:00 (Queue) on Error: job 88 -> result: MongoServerError: E11000 duplicate key error collection: admin.todos index: todoid_1 dup key: { todoid: 61 } - {} +13ms
+```
+
 ### bull-board 활용
 
 Bull queue monitoring 을 위한 admin UI 를 별도로 실행 가능.  

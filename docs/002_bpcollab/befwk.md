@@ -248,7 +248,7 @@ Node.js 기반 Backend 개발 시 API 문서 관리를 위한 swagger 설정의 
   - 공통 module repository: <https://github.com/hcp-bpcp/hcp-bpcp-module-common>
 
 - API Tag 정의 방법
-  - Contoller 단위로 Swagger API Tagging 가능
+  - Contoller 단위로 Swagger API tagging 가능
   - Controller 내에, `@ApiTags` Decorator 적용 예시
   ```typescript
   ...
@@ -263,7 +263,7 @@ Node.js 기반 Backend 개발 시 API 문서 관리를 위한 swagger 설정의 
   ![](./images/2022-07-28-15-14-54.png)
 
 - API Schema 정의
-  - DTO 혹은 API Docs 에 포함되기 원하는 class 에 API Property 를 적용하여 schema 정의 가능
+  - DTO 혹은 API Docs 에 포함되기 원하는 class 에 API property 를 적용하여 schema 정의 가능
   - `@ApiProperty` Decorator 적용 예시
   ```ts
   import { ApiProperty } from '@nestjs/swagger';
