@@ -16,7 +16,7 @@ Node.js v16.15.x 이상의 stable version 기준, Backend Framework 검토.
   - Nest 공식 개발 문서: <https://docs.nestjs.com/>
   - Nest CRUD Generator 설명: <https://docs.nestjs.com/recipes/crud-generator>
 
-### Repository
+### Source code repository
 
 - Nest 초기 검토 내역: <https://github.com/hcp-bpcp/hcp-bpcp-backend-nestjs>
 - Nest 기반 기능 검증: <https://github.com/hcp-bpcp/hcp-bpcp-backend-nestjs>
@@ -290,7 +290,7 @@ Node.js 기반 Backend 개발 시 API 문서 관리를 위한 swagger 설정의 
 pure Javascript 기반 Node.js Express backend framework 검토.  
 Nest 활용으로 최종 결정하였으나, 간단한 Test 용 API sample 개발 내역임.
 
-### Repository
+### Source code repository
 
 - Express 기반 기능 검증: <https://github.com/hcp-bpcp/hcp-bpcp-backend-express>
   - ORM: sequelize

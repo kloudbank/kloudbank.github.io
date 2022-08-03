@@ -108,7 +108,7 @@ RDB 는 **PostgreSQL** 활용.
   <https://docs.nestjs.com/recipes/sql-typeorm>
 :::
 
-### Repository
+### Source code repository
 
 TypeORM 기반 sample 및 Prisma sample code 도 test 용도로 추가되어 있음.
 

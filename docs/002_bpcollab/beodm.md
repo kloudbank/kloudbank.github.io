@@ -60,7 +60,7 @@ _<u>Nest 제공 module 인 `@nestjs/mongoose` 을 활용하지 않는 방향으�
   <https://docs.nestjs.com/recipes/mongodb>
 :::
 
-### Repository
+### Source code repository
 
 Mongoose 기반 model 정의 및 CRUD sample code
 

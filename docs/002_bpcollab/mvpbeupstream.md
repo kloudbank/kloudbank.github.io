@@ -257,7 +257,7 @@ if_todos   | value     | string   | True     | False
 
 Backend Service 개발 내역 정리.
 
-### Repository 구성 및 Summary
+### Source code repository
 
 - MVP Service (hcp-bpcp-backend-mvp)
   - Github Repository: <https://github.com/hcp-bpcp/hcp-bpcp-backend-mvp>

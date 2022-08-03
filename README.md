@@ -1,7 +1,7 @@
 ---
 home: true
-heroText: Kloudbank demo
-tagline: A simple vuepress blog theme.
+heroText: Kloudbank
+tagline: knabduolK.
 # heroImage: /kloudbank.png
 # heroImageStyle: {
 #   maxWidth: '600px',
@@ -13,7 +13,7 @@ tagline: A simple vuepress blog theme.
 # }
 bgImage: '/bg.jpeg'
 bgImageStyle: {
-  height: '500px'
+  height: '450px'
 }
 
 isShowTitleInHome: false
