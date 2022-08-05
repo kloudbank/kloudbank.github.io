@@ -231,13 +231,13 @@ module.exports = {
         {
           title: "Backend",
           collapsable: false,
-          children: ["befwk", "beorm", "beodm", "beredis", "bewebpush"],
-          sidebarDepth: 2,
+          children: ["befwk", "beorm", "beodm", "beredis", "bewebpush", "beauth"],
+          sidebarDepth: 2
         },
         {
           title: "MVP",
           collapsable: false,
-          children: ["mvpintro", "mvpbeupstream"],
+          children: ["mvpintro", "mvpbeupstream", "mvpbeauth"],
           sidebarDepth: 2,
         },
       ],
