@@ -23,12 +23,12 @@ endlegend
 node "Channel" as channel {
   rectangle "External Portal" as extportal #aqua
   [Create/Update Doc] as credoc #aqua
-  [Interface Doc.] as ifdoc #aqua
-  database "Document DB" as docdb #aqua
 }
 node "Private Cloud" as privatecloud {
   rectangle "Internal Portal" as intportal
   database "I/F DB" as ifdb
+  [Interface Doc.] as ifdoc #aqua
+  database "Document DB" as docdb #aqua
 }
 node "Legacy Systems" as legacy {
   rectangle "System A" as sysa
@@ -40,14 +40,14 @@ node "Legacy Systems" as legacy {
 extuser -> extportal #blue
 extportal -> docdb #blue
 extportal -> credoc #blue
-intportal -d-> ifdb
+intportal -d-> docdb
 credoc -d-> docdb #blue
-ifdoc -l-> docdb
+ifdoc .l.> docdb #blue
 ifdoc -> ifdb #blue
-ifdb -> legacydb
-sysa -d-> legacydb
-sysb -d-> legacydb
-sysc -d-> legacydb
+ifdb -d-> legacydb
+sysa -u-> legacydb
+sysb -u-> legacydb
+sysc -u-> legacydb
 intuser -d-> intportal
 
 @enduml
@@ -70,12 +70,12 @@ circle "Start" as start
 circle "End" as end
 node "Channel" as channel {
   [Todo API] as todoapi
-  [Interface API] as ifapi
-  database "Document DB" as docdb
-  database "History RDB" as histdb
 }
 node "Private Cloud" as privatecloud {
+  [Interface API] as ifapi
   database "I/F RDB" as ifdb
+  database "Document DB" as docdb
+  database "History RDB" as histdb
 }
 
 start -> todoapi
@@ -101,11 +101,11 @@ circle "Start" as start
 circle "End" as end
 node "Channel" as channel {
   [Todo API] as todoapi
-  [Interface API] as ifapi
-  database "Document DB" as docdb
   queue "Queue" as queue
 }
 node "Private Cloud" as privatecloud {
+  [Interface API] as ifapi
+  database "Document DB" as docdb
   database "I/F RDB" as ifdb
 }
 
@@ -337,7 +337,7 @@ Cluster_Boundary(cluster, "Channel") {
     database "Document" as mongodb
   }
   Namespace_Boundary(postgrens, "PostgreSQL") {
-    database "RDB Tables" as rdbtabs
+    database "RDB I/F Tables" as rdbtabs
   }
 
   Rel_R(ingauth, svcauth, " ")
@@ -402,7 +402,7 @@ Cluster_Boundary(cluster, "Channel") {
     queue "Queue" as redisqueue
   }
   Namespace_Boundary(postgrens, "PostgreSQL") {
-    database "RDB Tables" as rdbtabs
+    database "RDB I/F Tables" as rdbtabs
   }
 
   Rel_D(ingauth, svcauth, " ")
