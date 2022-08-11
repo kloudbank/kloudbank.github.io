@@ -10,6 +10,10 @@ Collab. Portal 의 순거래 관련 Backend 기능에 대한 설계 및 개발.
 ## Data Flow
 
 순거래 기능 Data Flow Exmaple.
+1. Document Data 생성/완료 API 호출
+2. Document Data 를 DB 에 저장
+3. Interface 기능을 통한 Document type data 변환
+4. RDB table data type 으로 저장
 
 @startuml
 
@@ -22,7 +26,7 @@ endlegend
 "Internal User" as intuser
 node "Channel" as channel {
   rectangle "External Portal" as extportal #aqua
-  [Create/Update Doc] as credoc #aqua
+  [Create/Update Doc.] as credoc #aqua
 }
 node "Private Cloud" as privatecloud {
   rectangle "Internal Portal" as intportal
@@ -37,13 +41,12 @@ node "Legacy Systems" as legacy {
   database "Legacy DB" as legacydb
 }
 
-extuser -> extportal #blue
-extportal -> docdb #blue
-extportal -> credoc #blue
-intportal -d-> docdb
-credoc -d-> docdb #blue
-ifdoc .l.> docdb #blue
-ifdoc -> ifdb #blue
+extuser -> extportal
+extportal -> credoc #blue: "1"
+intportal .d.> docdb
+credoc -d-> docdb #blue: "2"
+ifdoc .l.> docdb #blue: "3"
+ifdoc -> ifdb #blue: "4"
 ifdb -d-> legacydb
 sysa -u-> legacydb
 sysb -u-> legacydb
@@ -135,8 +138,8 @@ Todo 목록 | GET | `/todos` |
 Todo 조회 | GET | `/todos/{todoid}` | 
 Todo 수정 | PUT | `/todos/{todoid}` | 
 Todo 삭제 | DELETE | `/todos/{todoid}` | 
-Todo 완료 | POST | `/todos/{todoid}/complete` | Todo status 완료 처리 및 interface 연계 용도
-Todo 완료 queueing | POST | `/todos/{todoid}/complete-queue` | Todo status 완료 처리 queueing producer
+Todo 완료 (upstream) | POST | `/todos/{todoid}/complete/upstream` | Todo status 완료 처리 및 interface 연계 용도
+Todo 완료 (upstream) queueing | POST | `/todos/{todoid}/complete-queue/upstream` | Todo status 완료 처리 queueing producer
 
 ### Interface API
 
@@ -276,7 +279,7 @@ Backend Service 개발 내역 정리.
     - MVP Interface queueing 시, subscribe and interface process 수행
 
 - Auth Service (hcp-bpcp-backend-auth)
-  - Github Repository: <https://github.com/hcp-bpcp/hcp-bpcp-backend-mvp-interface>
+  - Github Repository: <https://github.com/hcp-bpcp/hcp-bpcp-backend-auth>
   - 주요 기능:
     - Ingress 기반 auth-url 의 인증 API endpoint 제공
     - Redis cache 기반 token data 관리 기능
@@ -298,7 +301,7 @@ Cluster deployment view.
 
 ### API Sync Model
 
-- MVP service 접근 시, ingress auth-url 기반 인증
+- MVP service 호출 시, ingress auth-url 기반 인증
 - MVP <-> MVP Interface 등 backend service 간 API 연계는 k8s service name 기반으로 요청 **<u>(인증 없음)</u>**
 
 @startuml
@@ -360,7 +363,7 @@ Cluster_Boundary(cluster, "Channel") {
 
 ### Queueing Model
 
-- MVP service 접근 시, ingress auth-url 기반 인증
+- MVP service 호출 시, ingress auth-url 기반 인증
 - <u>MVP Backend Service 간 API 호출 없음</u>
 
 
