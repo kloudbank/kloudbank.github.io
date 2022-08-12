@@ -106,7 +106,7 @@ Websocket gateway 기반 event emitting, broadcasting 을 위한 API list.
 Name | URI | Method | Remark
 ----- | ----- | ----- | -----
 Event 발생 (broadcast) | POST | `/events/downstream` | Socket event broadcasting
-Event user 기준 발생 (broadcast) | POST | `/events/{userid}/downstream` | Socket event broadcasting
+Event user 기준 발생 (emitting) | POST | `/events/{userid}/downstream` | Socket event emitting
 
 ## Data Model Design
 

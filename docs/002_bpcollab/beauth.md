@@ -21,7 +21,7 @@ Nest 에서는 `@nestjs/passport` 를 제공하여 `passport-local`, `passport-j
 ## Nest Guard
 
 Nest 는 권한, Role 등에 따라 주어진 요청이 처리할 권한이 있는지 사전에 체크할 수 있도록 `Guard` 를 사용할 수 있는데, 이는 인증 / 인가 등을 확인하고, 런타임에서 해당 요청이 API 를 직접 handling 할 수 있는지를 통제 할 수 있으며, `@Injectable` decorator 를 활용하여 provider 형태로 사용 가능.  
-`passport` 의 strategy 와 연계하여 인증 처리를 할 경우에는, `@nestjs/passpord` library 에서 제공하는 `AuthGuard` 활용.
+`passport` 의 strategy 와 연계하여 인증 처리를 할 경우에는, `@nestjs/passport` library 에서 제공하는 `AuthGuard` 활용.
 
 
 ::: warning
@@ -279,7 +279,7 @@ export class AuthModule {}
       .then((result) => {
         res.setHeader('is-refresh', result.isRefresh);
         if (result['access_token']) {
-          res.setHeader('refresh-token', result['access_token']);
+          res.setHeader('access-token', result['access_token']);
         }
         res.status(HttpStatus.OK).json(req.user);
       })
@@ -334,13 +334,13 @@ metadata:
 ```yaml
     nginx.ingress.kubernetes.io/configuration-snippet: |
       auth_request_set $is_refresh $upstream_http_is_refresh;
-      auth_request_set $refresh_token $upstream_http_refresh_token;
+      auth_request_set $access_token $upstream_http_access_token;
       more_set_headers "is-refresh: $is_refresh";
-      more_set_headers "refresh-token: $refresh_token";
+      more_set_headers "access-token: $access_token";
 ```
 
 - snippet 미적용 test result
-  - 위에서 추가한 `is_refresh`, `refresh_token` 에 대한 header 가, 호출 결과에 전달되지 않음
+  - 위에서 추가한 `is_refresh`, `access_token` 에 대한 header 가, 호출 결과에 전달되지 않음
 ```sh
 ...
 < HTTP/1.1 200 OK
@@ -351,14 +351,14 @@ metadata:
 ```
 
 - snippet 적용 test result
-  - 위에서 추가한 `is_refresh`, `refresh_token` 에 대한 header 가, 호출 결과에 전달됨
+  - 위에서 추가한 `is_refresh`, `access_token` 에 대한 header 가, 호출 결과에 전달됨
 ```sh
 ...
 < HTTP/1.1 200 OK
 < X-Powered-By: Express
 ## 추가된 response header Start
 < is-refresh: true
-< refresh-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJ0ZXN0IiwiZmlyc3RuYW1lIjoiRm9vIiwibGFzdG5hbWUiOiJCYXIiLCJlbWFpbCI6ImZvb0BiYXIuY29tIiwiaWF0IjoxNjU5Njc4NTk2LCJleHAiOjE2NTk2ODIxOTZ9.kNFZEJCgt0Y7AZkXmADzOeVVeewf5Ys647FDYLsDwNQ
+< access-token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyaWQiOiJ0ZXN0IiwiZmlyc3RuYW1lIjoiRm9vIiwibGFzdG5hbWUiOiJCYXIiLCJlbWFpbCI6ImZvb0BiYXIuY29tIiwiaWF0IjoxNjU5Njc4NTk2LCJleHAiOjE2NTk2ODIxOTZ9.kNFZEJCgt0Y7AZkXmADzOeVVeewf5Ys647FDYLsDwNQ
 ## 추가된 response header End
 < Content-Type: application/json; charset=utf-8
 < Content-Length: 74
